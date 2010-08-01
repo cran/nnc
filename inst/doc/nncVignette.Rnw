@@ -1,0 +1,498 @@
+\documentclass[article,nojss]{jss}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{url}
+\newfont{\tit}{cmss10 scaled\magstep1}
+\def\ti#1{{\tit #1}}
+\newfont{\tty}{cmtt10 scaled\magstep1}
+
+\author{A. I. McLeod, M. S. Islam
+\\ University of Western Ontario }
+
+\title{Some notes on the nnc package}
+
+\Plaintitle{Some notes on the nnc package} %% without formatting
+%%\Shorttitle{Some notes on the nnc package} %% a short title (if necessary)
+
+
+\Abstract{
+Several matters relating the \pkg{nnc} package are discussed.
+When show that when $k$, the number of nearest neighbors is even,
+there is considerable variability in the predictions using
+\code{knn} in the package \pkg{class}.
+This variability occurs even with the default setting of
+the argument \code{use.all=TRUE}.
+Cross-validation is discussed as well.
+The importance of {\it honest} cross-validation is noted
+and the delete-d method is recommended.
+Cross-validation is then used to estimate the prediction errors to
+compare Fisher linear discriminant classification with kNN for
+the iris data.
+We conclude with two graphics that demonstrate why
+Fisher linear discriminate analysis works so well with the
+iris data.
+These graphs should be viewed in color.
+}
+
+\Keywords{
+cluster and multicore computers;
+cross-validation;
+delete-d cross-validation;
+honest cross-validation;
+k-nearest neighbor classification;
+repeated-holdout cross validation;
+Rmpi package}
+
+\Address{
+  A. Ian McLeod\\
+  Department of Statistical and Actuarial Sciences\\
+  University of Western Ontario\\
+  E-mail: \email{aim@stats.uwo.ca}\\
+  URL: \url{http://www.stats.uwo.ca/faculty/aim}\\
+}
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+%\VignetteIndexEntry{Some examples with nnc}
+%\VignetteKeywords{kNN classification, model selection}
+%\VignettePackage{nnc}
+
+
+<<preliminaries,echo=FALSE,results=hide>>=
+online <- FALSE ## if set to FALSE the local copy of MSFT.rda
+                ## is used instead of get.hist.quote()
+options(prompt = "R> ")
+@
+
+\section[The problem of ties]{The problem of ties} 
+\label{TIES} 
+
+\citet{Holmes2003} reported that misclassification rate 
+for Ripley's synthetic
+test data was $0.82$ using the optimal 
+maximum pseudolikelihood estimate for $k$,
+$\hat{k} = 66$.
+The code below verifies that this estimate agrees with our
+software,
+
+<<SynthOptimalk, eval=FALSE>>=
+library(nnc)
+library(MASS)
+X <- synth.tr[,1:2]
+y <- factor(synth.tr[,3])
+KMAX<-100
+d<-numeric(KMAX)
+for (k in 1:KMAX){
+    z <- nnc(k = k, X = X, Y = y)
+    d[k]<- deviance(glm.fit(x = z, y = y, family = binomial(link = "logit")))
+    }
+khat <- which.min(d)    
+plot(d, xlab="k", ylab="deviance")
+points(khat, d[khat], col="red", pch=16, cex=1.4)
+title(sub=bquote(hat(k) == .(khat)))
+@
+
+\begin{figure}[h!]
+\begin{center}
+<<SynthOptimalk-repeat,fig=TRUE,height=5,width=5,echo=FALSE>>=
+<<SynthOptimalk>>
+@
+\caption{ 
+Optimal k for kNN for Ripley's synthetic data
+}
+\end{center}
+\end{figure}
+
+
+
+
+In practice even values of $k$ are often avoided since
+there is some arbitrariness due to the likelihood of
+ties values.
+In the \code{knn} function, ties are still a problem even
+when the default option, \code{use.all=TRUE}, is used.
+
+<<TiesKis66,eval=FALSE>>=
+XTest <- synth.te[,1:2]
+yTest <- factor(synth.te[,3])
+REP<-100
+K<-66
+e<-numeric(REP)
+for (i in 1:REP){
+    yhat<-knn(train=X, test=XTest, cl=y, k = K, use.all=TRUE)
+    e[i] <- mean(yhat!=yTest)
+    }
+hist(e, main="Distribution of error rate", xlab="Error rate")
+@
+
+\begin{figure}[h!]
+\begin{center}
+<<TiesKis66-repeat,fig=TRUE,height=5,width=5,echo=FALSE>>=
+<<TiesKis66>>
+@
+\caption{ 
+Histogram of misclassification rates for the test data
+when $k=66$ is used for the training data.
+}
+\end{center}
+\end{figure}
+
+As can be seen a misclassification rate of $0.82$ is on the
+low side of what can be expected when $k = 66$ is used.
+Trying $k=67$, we find, as expected, the misclassification
+rate remains constant.
+
+
+<<TiesKis67>>=
+K<-67
+for (i in 1:REP){
+    yhat<-knn(train=X, test=XTest, cl=y, k = 67)
+    e[i] <- mean(yhat!=yTest)
+    }
+summary(e)
+@
+
+\section[Fisher's iris data]{Fisher's iris data} 
+\label{FisherIris} 
+
+We use the built-in \proglang{R} dataset \code{iris}
+to illustrate how our algorithms work for
+the case when there are $Q=3$ classes.
+With the iris data there are 3 classes, according to iris species,
+setosa, versicolor, and virginica.
+The inputs are measurements of 
+sepal length and width and petal length and width, respectively.
+There are 50 observations on each species.
+
+\subsection[Optimal k]{Optimal k}
+\label{Optimalk}
+
+
+Here we find the optimal $k$,
+
+<<Iriskhat,eval=FALSE>>=
+khat(iris[,1:4], iris[,5])
+@
+
+\begin{figure}[h!]
+\begin{center}
+<<Iriskhat-repeat,fig=TRUE,height=5,width=5,echo=FALSE>>=
+<<Iriskhat>>
+@
+\caption{ 
+Profile deviance plot for estimate k with iris data
+}
+\end{center}
+\end{figure}
+
+
+
+\subsection[Iris data visualization]{Iris data visualization} 
+\label{LatticeIris}
+
+Wikipedia has a nice article about this dataset with pictures
+of the three iris species: setosa, virginica and versicolor.
+
+See \url{http://en.wikipedia.org/wiki/Iris_flower_data_set}
+
+The scatterplot in the figure below, obtained from the
+Wikipedia article cited above,
+shows how well separated
+the three species are.
+
+\begin{figure} [hbt]
+\centering
+\includegraphics[angle=0, scale=0.5]{Iris.pdf}
+\caption{
+Scatterplot matrix for iris data
+}\label{Fig:scatterplotmatrix}
+\end{figure}
+
+\cite{Fisher1936}\footnote{ 
+\url{http://digital.library.adelaide.edu.au/coll/special//fisher/138.pdf}
+}
+used this iris data\footnote{
+There was a typo in the data listed
+in \citet{Fisher1936}. 
+See 
+\url{http://archive.ics.uci.edu/ml/datasets/Iris}
+}
+to illustrate the technique
+we know today as Fisher linear discriminant analysis.
+It is no surprise that the method is probably the best method
+for this data.
+
+Visualization of the data with suitable graphics reveals
+that the species are well separated with in fact no overlap
+between setosa and the other species.
+
+The lattice graphic strongly suggests linear decision boundaries
+and so it is not surprising the Fisher linear discriminate
+classification works well with this data.
+It is a little suprising that kNN works as well as it does!
+
+The parallel coordinates plot below also shows how well separated
+the three classes are and that there is no suggestion of a nonlinear
+decision boundary.
+
+<<irisParallel,eval=FALSE>>=
+library(lattice)
+parallel(~iris[,1:4], groups=iris[,5], auto.key=list(space="top", columns=3))
+@ 
+
+%\begin{figure}[h!]
+%\begin{center}
+%<<irisParallel-repeat,fig=TRUE,height=6,width=6,echo=FALSE>>=
+%<<irisParallel>>
+%@
+%\caption{ 
+%Parallel coordinates plot for iris data. Note complete separation
+%of setosa from the others using just petal width.
+%}
+%\end{center}
+%\end{figure}
+
+%workaround since the usual method doesn't seem to work for
+%lattice graphics?
+\begin{figure} [hbt]
+\centering
+\includegraphics[angle=0, scale=0.6]{IrisParallelPlot.pdf}
+\caption{
+Scatterplot matrix for iris data
+}\label{Fig:scatterplotmatrix}
+\end{figure}
+
+
+\subsection[Cross-validation comparison with FLDA]{Cross-validation comparison with FLDA}
+\label{CVComparison}
+
+\citet[\S 7.10.2 and 7.10.3]{Hastie2009} 
+have pointed out that frequently cross-validation
+methods have been misapplied when a parameter is not re-estimated
+each time on the training data.
+The term {\it honest} cross-validation may be used to emphasize
+that this is done.
+The consequence of not doing so is that a much more optimistic result
+is obtained.
+The true test error is likely to be much larger.
+
+\citet[\S 7.10]{Hastie2009} recommend $\mathfrak{k}$-fold cross-validation using
+the one-standard-deviation rule.
+An important drawback to $\mathfrak{k}$-fold cross-validation is that the
+results are quite variable since there is not really enough
+replication.
+\citet{Kim2009} recommended that the method given in \citet{Hastie2009}
+not be used for classification problems and instead recommended
+repeated-holdout cross validation.
+This is essentially equivalent to the delete-d method recommended
+by \citet{Shao1997} for linear model selection.
+With this algorithm, a randomly sampling algorithm is used
+to select the test data and the validation data is then formed by
+removing this test data.
+Many replications are required, at least 1000.
+This cross-validation method is also very easy to implement
+using an \proglang{R} package for cluster or parallel computing.
+
+The \proglang{R} function, \code{OneItn}, shown below computes
+a single-cross-validation estimate.
+In the code we use the parameter \code{fold} to specify
+that the fraction of data being used for the test sample
+will be $1/{\tty fold}$.
+This function can then be independently evaluated on each thread
+or node in a multicore or cluster computer.
+
+With the iris data, it is more efficient to use stratified
+sampling, taking an equal number from each class for the
+training samples.
+This makes the code below slightly more complicated and lengthy.
+
+<<DefineOneItn>>=
+OneItn<-function(){
+	Y<-iris[,5]
+	X<-iris[,1:4]
+	Xset <- iris[iris$Species=="setosa", 1:4]
+	Xver <- iris[iris$Species=="versicolor", 1:4]
+	Xvir <- iris[iris$Species=="virginica", 1:4]
+	Yset <- iris[iris$Species=="setosa", 5]
+	Yver <- iris[iris$Species=="versicolor", 5]
+	Yvir <- iris[iris$Species=="virginica", 5]
+	n<-nrow(Xset)
+	fold<-5
+	nTest<-floor(n/fold)
+	NREP<-100
+	kmax<-80
+    jset<-sample(1:n, size=nTest)
+    jver<-sample(1:n, size=nTest)
+    jvir<-sample(1:n, size=nTest)
+    indsetTest<-rep(FALSE, n)
+    indsetTest[jset]<-TRUE
+    indverTest<-rep(FALSE, n)
+    indverTest[jver]<-TRUE
+    indvirTest<-rep(FALSE, n)
+    indvirTest[jvir]<-TRUE
+    YsetTrain<-Yset[!indsetTest]
+    YsetTest<-Yset[indsetTest]
+    XsetTrain <- Xset[!indsetTest,]
+    XsetTest <- Xset[indsetTest,]
+    YverTrain<-Yver[!indverTest]
+    YverTest<-Yver[indverTest]
+    XverTrain <- Xver[!indverTest,]
+    XverTest <- Xver[indverTest,]    
+    YvirTrain<-Yvir[!indvirTest]
+    YvirTest<-Yvir[indvirTest]
+    XvirTrain <- Xvir[!indvirTest,]
+    XvirTest <- Xvir[indvirTest,]     
+    XTrain <- rbind(XsetTrain, XverTrain, XvirTrain)
+    YTrain <- c(YsetTrain, YverTrain, YvirTrain)
+    XTest <- rbind(XsetTest, XverTest, XvirTest)
+    YTest <- c(YsetTest, YverTest, YvirTest)        
+    train.LDA<-lda(XTrain, YTrain)
+    yfitLDA<-predict(train.LDA, newdata=XTest, dimen=1)$class
+    etaFLDA<-mean(as.numeric(yfitLDA!=YTest))
+    kopt <- khat(XTrain, YTrain, kmax, plot=FALSE)
+    ans<-knn(train=XTrain, test=XTest, k=kopt, cl=YTrain)
+    etaKNN <- mean(as.numeric(ans!=YTest))
+    eta<-c(etaFLDA,etaKNN)
+    names(eta)<-c("LDA","kNN")
+	eta
+} 
+@
+
+Using the script below we evaluate \code{OneItn} five times to estimate
+the time required.
+
+<<RunHonestCV>>=
+library(nnc)
+StartTime<-proc.time()[1]
+NREP<-5
+eta<-matrix(numeric(NREP*2), ncol=2)
+for (i in 1:NREP)
+    eta[i,] <- OneItn()
+EndTime<-proc.time()[1]
+TotTime<-EndTime-StartTime
+e<-apply(eta, MARGIN=2, FUN=mean)
+e
+TotTime
+@
+
+
+The script used for running using \pkg{Rmpi} is given below.
+
+\begin{Schunk}
+\begin{Sinput}
+##Source: nncRmpi.R
+#Delete d-cross validation to compare FLDA and kNN for iris data.
+#Note the function OneItn() is defined in the workspace and is also given
+#  in the vignette for the 'nnc' package.
+#TO RUN THIS SCRIPT
+#LOAD 'nnc/Rmpi/.Rdata' or load script for 'OneItn'
+#Timing: NumRep<-10^4 takes about 27 minutes with 8 threads
+#
+library(Rmpi)
+Start <- proc.time()[3]
+StartDate <- date()
+#start slave nodes
+mpi.spawn.Rslaves(nslaves=8)
+#compare FLDA and kNN using cross-validation
+mpi.bcast.cmd(library(nnc))
+mpi.bcast.cmd(library(MASS))
+NumRep <- 10^4
+ISEED <- 19100437
+#setup parallel RNG. seed can be specified.
+mpi.setup.rngstream(ISEED)
+#export function
+mpi.bcast.Robj2slave(OneItn)
+#Use parallel replication
+ans<-mpi.iparReplicate(n=NumRep, expr=OneItn())
+End <- proc.time()[3]
+EndDate<-date()
+TotalTime <- End-Start
+write(TotalTime, file="TotalTime.txt")
+write(StartDate, file="TotalTime.txt", append=TRUE)
+write(EndDate, file="TotalTime.txt", append=TRUE)
+ans<-t(ans) #so columns are FLDA, kNN
+#save data for analysis later
+save(ans, file="ans.Rdata")
+#print out
+cat("Total time in seconds =", TotalTime, fill=TRUE)
+cat("Total time in minutes =", TotalTime/60, fill=TRUE)
+apply(ans, 2, mean)
+apply(ans, 2, median)
+apply(ans, 2, function(x), mean(x, trim=0.1))
+boxplot(ans)
+boxplot(jitter(ans))
+tb<-apply(ans, 2, table)
+#frequency plot
+graphics.off()
+library(lattice)
+tbLDA<-as.data.frame(tb$LDA)
+tbLDA$Var1 <- round(as.numeric(as.character(tbLDA$Var1)), 3)
+xyplot(Freq/NumRep ~ Var1, data=tbLDA, type="h", lwd=4, col="red", xlab="value", ylab="frequency")
+#
+tbkNN<-as.data.frame(tb$kNN)
+tbkNN$Var1 <- round(as.numeric(as.character(tbkNN$Var1)), 3)
+xyplot(Freq/NumRep ~ Var1, data=tbkNN, type="h", lwd=4, col="red", xlab="value", ylab="frequency")
+#close and quit
+mpi.close.Rslaves()
+mpi.quit()
+\end{Sinput}
+\end{Schunk}
+
+We ran the \proglang{R} script on a Mac Pro with 8 virtual cpu's
+with \code{NumRep<-10000}
+and it took about 27 minutes.
+The mis-classification rates are summarized in the table below.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrr}
+  \hline
+ & LDA & kNN \\ 
+  \hline
+mean & 0.0198 & 0.1809 \\ 
+sd & 0.0224 & 0.0845 \\ 
+median & 0.0000 & 0.1667 \\ 
+10 \% trim mean & 0.0164 & 0.1778 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of 10000 cross-validation replications}
+\label{TableRmpi}
+\end{center}
+\end{table}
+
+As expected FLDA performed much better than kNN for this data.
+This is confirmed in the boxplot shown below.
+
+\begin{figure} [hbt]
+\centering
+\includegraphics[angle=0, scale=0.4]{BoxplotRmpi.pdf}
+\caption{
+Boxplot of the mis-classification rates in 10,000 replications
+for FDLA and kNN.
+}\label{Fig:boxplot}
+\end{figure}
+
+%\newpage 
+
+There is extreme discretness in the cross-validated
+mis-classification rates.
+The lattice style line plots show that in fact
+the FDLA test errors take on only 4 distinct values
+in all 10,000 replications.
+
+\begin{figure} [hbt]
+\centering
+\includegraphics[angle=0, scale=0.4]{TrellisRmpi.pdf}
+\caption{
+Lattice plot showing the distribution of mis-classification
+in 10,000 replications for FDLA and kNN.
+}\label{Fig:lattice}
+\end{figure}
+
+%\vfill\break\eject
+
+\bibliography{nncVignette}
+
+\end{document}
+
+
