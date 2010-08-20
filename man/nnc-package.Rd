@@ -17,8 +17,8 @@ in microarray experiments.
 \tabular{ll}{
 Package: \tab nnc\cr
 Type: \tab Package\cr
-Version: \tab 1.10\cr
-Date: \tab 2010-08-01\cr
+Version: \tab 1.11\cr
+Date: \tab 2010-08-20\cr
 License: \tab GPL (>= 2)\cr
 }
 }

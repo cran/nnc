@@ -1,6 +1,6 @@
-export(nnc, khat)
+export("nnc", "khat", "nncTest")
 
 importFrom(nnet, multinom)
-
 importFrom(class, knn.cv)
+importFrom(class, knn)
 

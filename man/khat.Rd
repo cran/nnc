@@ -50,12 +50,13 @@ Maintainer: <aimcleod@uwo.ca>
 \examples{
 
 #Two-classes example
-library(MASS)
+library(MASS)#need synth.tr
 X <- synth.tr[,1:2]
 Y <- synth.tr[,3]
 khat(X=X, Y=Y)
 
 #Three-classes example
+library(MASS) #need lda
 Y<- iris[,5]
 X<- iris[,1:4]
 kopt<-khat(X, Y)

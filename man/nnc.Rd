@@ -1,6 +1,6 @@
 \name{nnc}
 \alias{nnc}
-\title{Computes nearest neighbour auto-covariates}
+\title{Computes nearest neighbour autocovariates}
 
 \description{
 Given n training examples in inputs X and output Y with two classes,
