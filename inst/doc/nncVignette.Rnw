@@ -16,7 +16,7 @@
 
 \Abstract{
 Several matters relating the \pkg{nnc} package are discussed.
-When show that when $k$, the number of nearest neighbors is even,
+We show that when $k$, the number of nearest neighbors is even,
 there is considerable variability in the predictions using
 \code{knn} in the package \pkg{class}.
 This variability occurs even with the default setting of
