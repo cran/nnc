@@ -2,5 +2,9 @@ CHANGES IN 'nnc' VERSION 1.11 (2010-08-21)
     o    nncTest() for computing nnc in test sample
 CHANGES IN 'nnc' VERSION 1.12 (2010-08-22)
     o    typographical correction in vignette
+CHANGES IN 'nnc' VERSION 1.13 (2010-08-29)
+    o    minor corrections to documentation 
+    o    require MASS
+    o    added Mathematica package for nnc computation in subdirectory Mathematica in the installation directory.
 
 

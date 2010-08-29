@@ -4,7 +4,7 @@
 \title{Optimal k in kNN using pseudolikelihood}
 \description{
 Uses the profile pseudolikelihood to obtain the estimate for k, the number of
-nearest neighbours parameter in kNN.
+nearest neighbors parameter in kNN.
 }
 
 \usage{khat(X, Y, kmax = ceiling(length(Y) * 0.5), plot = TRUE)}
@@ -49,14 +49,14 @@ Maintainer: <aimcleod@uwo.ca>
 
 \examples{
 
-#Two-classes example
-library(MASS)#need synth.tr
+#Two classes example
+library("MASS")#need synth.tr
 X <- synth.tr[,1:2]
 Y <- synth.tr[,3]
 khat(X=X, Y=Y)
 
-#Three-classes example
-library(MASS) #need lda
+#Three classes example
+library("MASS") #need lda
 Y<- iris[,5]
 X<- iris[,1:4]
 kopt<-khat(X, Y)

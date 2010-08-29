@@ -1,0 +1,248 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 7.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[      7273,        239]
+NotebookOptionsPosition[      6255,        199]
+NotebookOutlinePosition[      6621,        215]
+CellTagsIndexPosition[      6578,        212]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Iris Example", "Title",
+ CellChangeTimes->{{3.4895070695494146`*^9, 3.4895070782074146`*^9}, {
+  3.492108866685649*^9, 3.4921088724108853`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Purpose", "Section",
+ CellChangeTimes->{{3.4921088833777556`*^9, 3.4921089042506895`*^9}}],
+
+Cell[TextData[{
+ "To demonstrate that for the Iris dataset our ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " package nnc gives the same results as the R package.  This is just an \
+example check -- many other checks were also carried out."
+}], "Text",
+ CellChangeTimes->{{3.4921089068871064`*^9, 3.49210897145592*^9}, {
+  3.4921099144829655`*^9, 3.492109934263892*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Example Check", "Section",
+ CellChangeTimes->{{3.4921088833777556`*^9, 3.4921089042506895`*^9}, {
+  3.4921090136073904`*^9, 3.4921090145901966`*^9}, {3.492109509721771*^9, 
+  3.4921095124829884`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Needs", "[", "\"\<nnc`\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.492108844627107*^9, 3.4921088566859846`*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"Nearest Neighbor Autocovariates. \\nJuly 30, 2010\"\>",
+  StripOnInput->False,
+  FontFamily->"Times",
+  FontSize->9,
+  FontColor->RGBColor[0.333293, 0.419599, 0.184301]]], "Print",
+ CellChangeTimes->{3.492109024605461*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"X", "=", 
+   RowBox[{"Import", "[", "\"\<StatisticsExamples/Data/iris.dat\>\"", "]"}]}],
+   ";"}]], "Input",
+ CellChangeTimes->{3.4894858311880627`*^9, 3.489498338768512*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"y", "=", 
+   RowBox[{"Flatten", "[", 
+    RowBox[{
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "\"\<setosa\>\"", ",", "\"\<versicolor\>\"", ",", 
+         "\"\<virginica\>\""}], "}"}], ",", 
+       RowBox[{"{", "50", "}"}]}], "]"}], "//", "Transpose"}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.4894084003657813`*^9, 3.4894085307973814`*^9}, {
+  3.489503723524515*^9, 3.4895037258177147`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"a", "=", 
+   RowBox[{"NNC", "[", 
+    RowBox[{"X", ",", "y", ",", "17"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"i", "=", 
+   RowBox[{"Range", "[", 
+    RowBox[{"146", ",", "150"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"TableForm", "[", 
+   RowBox[{
+    RowBox[{"Drop", "[", 
+     RowBox[{"a", ",", "145"}], "]"}], ",", 
+    RowBox[{"TableHeadings", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Range", "[", 
+        RowBox[{"146", ",", "150"}], "]"}], ",", " ", "None"}], "}"}]}]}], 
+   "]"}], " "}]}], "Input",
+ CellChangeTimes->{{3.49210936607605*^9, 3.4921094459329615`*^9}, {
+  3.4921094934352665`*^9, 3.492109493700468*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  TagBox[GridBox[{
+     {
+      TagBox["146",
+       HoldForm], "0.058823529411764705`", "0.9411764705882353`"},
+     {
+      TagBox["147",
+       HoldForm], "0.23529411764705882`", "0.7647058823529411`"},
+     {
+      TagBox["148",
+       HoldForm], "0.058823529411764705`", "0.9411764705882353`"},
+     {
+      TagBox["149",
+       HoldForm], "0.`", "1.`"},
+     {
+      TagBox["150",
+       HoldForm], "0.17647058823529413`", "0.8235294117647058`"}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxDividers->{
+     "Columns" -> {False, True, {False}, False}, "ColumnsIndexed" -> {}, 
+      "Rows" -> {{False}}, "RowsIndexed" -> {}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}],
+   {OutputFormsDump`HeadedRows, None}],
+  Function[BoxForm`e$, 
+   TableForm[
+   BoxForm`e$, 
+    TableHeadings -> {{146, 147, 148, 149, 150}, None}]]]], "Output",
+ CellChangeTimes->{3.492109025401066*^9, 3.4921094493337836`*^9, 
+  3.4921094952916784`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Comparison With R", "Subsection",
+ CellChangeTimes->{{3.4921095273186836`*^9, 3.492109550016829*^9}}],
+
+Cell[TextData[StyleBox["> library(nnc)",
+ FontColor->RGBColor[1, 0, 0]]], "Program",
+ CellChangeTimes->{
+  3.4921095797350197`*^9, {3.492109799884631*^9, 3.4921098218339715`*^9}, {
+   3.4921098539701777`*^9, 3.492109855795389*^9}},
+ FontWeight->"Bold"],
+
+Cell["\<\
+Loading required package: class
+Loading required package: nnet\
+\>", "Program",
+ CellChangeTimes->{
+  3.4921095797350197`*^9, {3.4921098301956253`*^9, 3.4921098463261285`*^9}},
+ FontWeight->"Bold"],
+
+Cell[TextData[StyleBox["> library(RWinEdt)\n> options(prompt=\"R> \")\nR> \
+k<-17\nR> X<-iris[, 1:4]\nR> Y<-iris[, 5]\nR> n<-length(Y)\nR> y<-numeric(n)\n\
+R> classes <- unique(Y)\nR> Q <- length(classes)\nR> ind1 <- Y==classes[1]\n\
+R> y[ind1] <- -1\nR> z <- matrix(numeric(n*(Q-1)), nrow=n)\nR> for (j in \
+2:Q){\n+     indk <- Y==classes[j]\n+     indOther <- !(ind1|indk)\n+     \
+y[indk] <- 1\n+     y[indOther] <- -1\n+     zA <- nnc(X=X, Y=y, k=k)\n+     \
+y[indOther] <- 1\n+     zB <- nnc(X, y, k)\n+     z[,j-1] <- (zA+zB)/2\n+     \
+}\nR> tail(z,5)",
+ FontColor->RGBColor[1, 0, 0]]], "Program",
+ CellChangeTimes->{3.4921095797350197`*^9, 3.4921098412092953`*^9},
+ FontWeight->"Bold"],
+
+Cell["\<\
+             [,1]      [,2]
+[146,] 0.05882353 0.9411765
+[147,] 0.23529412 0.7647059
+[148,] 0.05555556 0.9444444
+[149,] 0.00000000 1.0000000
+[150,] 0.17647059 0.8235294\
+\>", "Program",
+ CellChangeTimes->{3.4921095797350197`*^9, 3.492109813160316*^9},
+ FontWeight->"Bold"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{607, 750},
+WindowMargins->{{61, Automatic}, {Automatic, 34}},
+ShowSelection->True,
+FrontEndVersion->"7.0 for Microsoft Windows (32-bit) (February 18, 2009)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[567, 22, 150, 2, 83, "Title"],
+Cell[CellGroupData[{
+Cell[742, 28, 96, 1, 71, "Section"],
+Cell[841, 31, 378, 8, 47, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1256, 44, 206, 3, 71, "Section"],
+Cell[CellGroupData[{
+Cell[1487, 51, 137, 2, 31, "Input"],
+Cell[1627, 55, 251, 6, 36, "Print"]
+}, Open  ]],
+Cell[1893, 64, 209, 5, 31, "Input"],
+Cell[2105, 71, 483, 14, 52, "Input"],
+Cell[CellGroupData[{
+Cell[2613, 89, 728, 21, 72, "Input"],
+Cell[3344, 112, 1281, 38, 101, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4662, 155, 107, 1, 36, "Subsection"],
+Cell[4772, 158, 252, 5, 41, "Program"],
+Cell[5027, 165, 207, 6, 58, "Program"],
+Cell[5237, 173, 694, 10, 415, "Program"],
+Cell[5934, 185, 281, 9, 126, "Program"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

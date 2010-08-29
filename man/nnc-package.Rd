@@ -3,10 +3,10 @@
 \alias{nnc-package}
 \docType{package}
 \title{
-Nearest neighbour auto-covariates
+Nearest neighbor autocovariates
 }
 \description{
-The nearest neighbour auto-covariates were defined by
+The nearest neighbor autocovariates were defined by
 Holmes and Adams (2003).
 The algorithm in this package was developed in Islam (2008)
 and the method was applied to the classification problems
@@ -17,8 +17,8 @@ in microarray experiments.
 \tabular{ll}{
 Package: \tab nnc\cr
 Type: \tab Package\cr
-Version: \tab 1.12\cr
-Date: \tab 2010-08-22\cr
+Version: \tab 1.13\cr
+Date: \tab 2010-08-28\cr
 License: \tab GPL (>= 2)\cr
 }
 }
@@ -41,7 +41,7 @@ Ph.D. Thesis, The University of Western Ontario.
 \examples{
 #Use pseudolikelihood method to estimate k in kNN
 #
-library(MASS)
+library("MASS")
 X <- synth.tr[,1:2]
 y <- synth.tr[,3]
 KMAX<-100

@@ -76,8 +76,8 @@ The code below verifies that this estimate agrees with our
 software,
 
 <<SynthOptimalk, eval=FALSE>>=
-library(nnc)
-library(MASS)
+library("nnc")
+library("MASS")
 X <- synth.tr[,1:2]
 y <- factor(synth.tr[,3])
 KMAX<-100
@@ -236,7 +236,7 @@ the three classes are and that there is no suggestion of a nonlinear
 decision boundary.
 
 <<irisParallel,eval=FALSE>>=
-library(lattice)
+library("lattice")
 parallel(~iris[,1:4], groups=iris[,5], auto.key=list(space="top", columns=3))
 @ 
 
@@ -362,7 +362,7 @@ Using the script below we evaluate \code{OneItn} five times to estimate
 the time required.
 
 <<RunHonestCV>>=
-library(nnc)
+library("nnc")
 StartTime<-proc.time()[1]
 NREP<-5
 eta<-matrix(numeric(NREP*2), ncol=2)
@@ -388,14 +388,14 @@ The script used for running using \pkg{Rmpi} is given below.
 #LOAD 'nnc/Rmpi/.Rdata' or load script for 'OneItn'
 #Timing: NumRep<-10^4 takes about 27 minutes with 8 threads
 #
-library(Rmpi)
+library("Rmpi")
 Start <- proc.time()[3]
 StartDate <- date()
 #start slave nodes
 mpi.spawn.Rslaves(nslaves=8)
 #compare FLDA and kNN using cross-validation
-mpi.bcast.cmd(library(nnc))
-mpi.bcast.cmd(library(MASS))
+mpi.bcast.cmd(library("nnc)")
+mpi.bcast.cmd(library("MASS)")
 NumRep <- 10^4
 ISEED <- 19100437
 #setup parallel RNG. seed can be specified.
@@ -424,7 +424,7 @@ boxplot(jitter(ans))
 tb<-apply(ans, 2, table)
 #frequency plot
 graphics.off()
-library(lattice)
+library("lattice")
 tbLDA<-as.data.frame(tb$LDA)
 tbLDA$Var1 <- round(as.numeric(as.character(tbLDA$Var1)), 3)
 xyplot(Freq/NumRep ~ Var1, data=tbLDA, type="h", lwd=4, col="red", xlab="value", ylab="frequency")

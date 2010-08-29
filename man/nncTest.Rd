@@ -1,6 +1,6 @@
 \name{nncTest}
 \alias{nncTest}
-\title{Nearest neighbour autocovariates for test data}
+\title{Nearest neighbor autocovariates for test data}
 
 \description{The relative proportion of class j to class 1 based on the
 training data is computed for each point in the test data.
@@ -12,10 +12,10 @@ training data is computed for each point in the test data.
   \item{X}{training inputs, n-by-p matrix, where n=sample size, p=number of input variables}
   \item{Y}{training outputs with K levels, length n}
   \item{XTest}{test inputs, m-by-p matrix, m=sample size}
-  \item{k}{neighbourhood size}
+  \item{k}{neighborhood size}
 }
 
-\value{vector of length m of nearest neighbour autocovariates corresponding to each
+\value{vector of length m of nearest neighbor autocovariates corresponding to each
 row of XTest}
 
 \references{
@@ -38,7 +38,7 @@ Maintainer: <aimcleod@uwo.ca>
 
 \examples{
 #Example 1. With 2 classes.
-library(MASS) #need synth.tr
+library("MASS") #need synth.tr
 X <- synth.tr[,1:2]
 Y <- synth.tr[,3]
 XTest <- synth.te[,1:2]

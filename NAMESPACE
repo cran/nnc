@@ -1,6 +1,8 @@
 export("nnc", "khat", "nncTest")
 
-importFrom(nnet, multinom)
-importFrom(class, knn.cv)
-importFrom(class, knn)
+importFrom("nnet", "multinom")
+importFrom("class", "knn.cv")
+importFrom("class", "knn")
+import("MASS")
+
 
