@@ -2,9 +2,7 @@
 \Rdversion{1.1}
 \alias{nnc-package}
 \docType{package}
-\title{
-Nearest neighbor autocovariates
-}
+\title{Nearest neighbor autocovariates}
 \description{
 The nearest neighbor autocovariates were defined by
 Holmes and Adams (2003).
@@ -17,8 +15,8 @@ in microarray experiments.
 \tabular{ll}{
 Package: \tab nnc\cr
 Type: \tab Package\cr
-Version: \tab 1.13\cr
-Date: \tab 2010-08-28\cr
+Version: \tab 1.14\cr
+Date: \tab 2010-08-31\cr
 License: \tab GPL (>= 2)\cr
 }
 }

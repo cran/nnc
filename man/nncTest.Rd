@@ -4,6 +4,9 @@
 
 \description{The relative proportion of class j to class 1 based on the
 training data is computed for each point in the test data.
+This is useful in cross-validation with regularized discriminant
+analysis and as well as with statistical models such as logistic
+regression. 
 }
 
 \usage{nncTest(X, Y, XTest, k)}
@@ -23,6 +26,10 @@ Holmes, C. C. and Adams, N. M. (2003).
 Likelihood inference in nearest-neighbour classification models, 
 Biometrika, 90(1), 99-112.
 \url{http://biomet.oxfordjournals.org/cgi/content/abstract/90/1/99}
+
+Islam, M.S. and McLeod, A.I. (2010).
+Improved Regularized Discriminant Analysis Using Nearest Neighbor Autocovariances.
+Working Paper.
 }
 
 \author{
